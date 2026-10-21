@@ -1,0 +1,94 @@
+{
+  "environment": "Demo - CS92U037",
+  "thresholds": {
+    "cpuWarn": 75,
+    "cpuFail": 90,
+    "memWarn": 80,
+    "memFail": 92,
+    "diskWarn": 80,
+    "diskFail": 90,
+    "responseMsWarn": 5000
+  },
+  "baseline": {
+    "factor": 1.5,
+    "minDelta": 10,
+    "minSamples": 5,
+    "window": 50
+  },
+  "servers": [
+    {
+      "name": "localhost",
+      "role": "app+web",
+      "services": [
+        "OracleServiceCDBCS",
+        "ORACLE ProcMGR V22.1.0.0.0",
+        "PsftAppServerDomainAPPDOMService",
+        "PsftPrcsDomainPRCSDOMService",
+        "PsftPIADomainpeoplesoftService",
+        "peoplesoft-PIA"
+      ],
+      "noStopServices": [
+        "OracleServiceCDBCS"
+      ],
+      "ports": [
+        { "name": "Jolt", "port": 9033 },
+        { "name": "PIA HTTP", "port": 8000 }
+      ],
+      "urls": [
+        {
+          "name": "PIA login page",
+          "url": "http://cs92demo.sparient.com:8000/psp/ps/?cmd=login",
+          "expectStatus": 200,
+          "expectText": "PS"
+        }
+      ],
+      "backupPaths": [],
+      "backupTasks": [],
+      "autoHeal": true,
+      "cachePaths": [
+        "C:\\Users\\Administrator\\psft\\pt\\8.62\\appserv\\APPDOM\\CACHE",
+        "C:\\Users\\Administrator\\psft\\pt\\8.62\\appserv\\prcs\\PRCSDOM\\CACHE"
+      ]
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Integration Gateway listener",
+      "url": "http://cs92demo.sparient.com:8000/PSIGW/PeopleSoftListeningConnector",
+      "expectStatus": 200
+    },
+    { "name": "psft_listener", "host": "psftdemo", "port": 1521 },
+    { "name": "SMTP relay", "host": "sparient-com.mail.protection.outlook.com", "port": 25 }
+  ],
+  "ticketing": {
+    "enabled": false,
+    "instanceUrl": "https://yourinstance.service-now.com",
+    "assignmentGroup": "PeopleSoft Support"
+  },
+  "email": {
+    "enabled": true,
+    "smtp": "sparient-com.mail.protection.outlook.com",
+    "port": 25,
+    "useSsl": false,
+    "from": "psft-healthcheck@sparient.com",
+    "to": [ "ajith.parameswarappa@sparient.com", "jayant.bhat@sparient.com", "srinivasa.rampura@sparient.com"],
+    "sendWhenHealthy": true
+  },
+  "remediation": {
+    "enabled": true,
+    "dryRun": false,
+    "cpuTrigger": 90,
+    "cooldownMinutes": 30,
+    "maxAttemptsPerDay": 2,
+    "maxStartsPerDay": 6,
+    "startRetries": 2,
+    "retryWaitSec": 15,
+    "stopTimeoutSec": 120,
+    "startTimeoutSec": 180,
+    "startDelaySec": 10,
+    "killOnStopTimeout": true,
+    "maintenanceWindows": [
+      { "start": "01:00", "end": "03:00" }
+    ]
+  }
+}
